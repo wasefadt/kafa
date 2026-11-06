@@ -1053,4 +1053,4 @@
         <div class="bg-white rounded-3xl max-w-3xl w-full border-2 border-qatar-maroon shadow-2xl overflow-hidden animate-scale">
             <div class="maroon-gradient p-6 text-white relative">
                 <button onclick="closeModal('journey-modal')" class="absolute left-5 top-5 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition">
-                    <i class="fa-solid fa-x
+                    <i class="fa-solid fa-x>
