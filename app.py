@@ -57,7 +57,7 @@
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #CBD5E1;
-            border-radius: 4px;
+            border-radius: 4 px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #8A1538;
