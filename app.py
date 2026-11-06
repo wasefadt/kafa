@@ -5,11 +5,11 @@ import numpy as np
 import os
 import glob
 
-# 1. إعداد الصفحة والسمة البصرية بالهوية القطرية (FutureX قطر)
+# 1. إعداد الصفحة وتصميم الهوية البصرية القطرية (FutureX قطر)
 st.set_page_config(page_title="المنصة الوطنية القطرية للتعلم المرن (كفاءة X)", layout="wide", initial_sidebar_state="expanded")
 
 # تفعيل النمط العربي والاتجاه RTL والألوان المعتمدة (العنابي والأخضر الفاتح #AAD2C3)
-st.markdown("""
+st.markdown('''
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
     html, body, [class*="css"] {
@@ -85,11 +85,11 @@ st.markdown("""
         border-radius: 50%;
     }
     </style>
-""", unsafe_allow_html=True)
+''', unsafe_allow_html=True)
 
 db_path = "kafaah_learning.db"
 
-# 2. دالة البناء والربط التلقائي لقاعدة البيانات من ملفات الـ CSV المستوردة
+# 2. بناء قاعدة البيانات سحابياً وتعبئتها تلقائياً من الـ 16 ملفاً الحقيقية مع معالجة الأخطاء الذكية
 def init_database_on_demand():
     if not os.path.exists(db_path):
         conn = sqlite3.connect(db_path)
@@ -284,30 +284,4 @@ def init_database_on_demand():
                     if course_id not in courses_dict:
                         cursor.execute("""
                             INSERT INTO courses (title, provider, language, duration_hours, difficulty_level, url, skills_covered, description, rating, partner_name, scorable_skills, department_id)
-                            VALUES (?, 'Coursera', 'العربية', 15, ?, ?, ?, ?, 4.5, ?, ?, ?)
-                        """, (course_name, diff_level, course_url, skills, desc, partner, scorable, dept_id))
-                        courses_dict[course_id] = cursor.lastrowid
-                        
-                    try:
-                        cursor.execute("INSERT INTO pathway_courses (pathway_id, course_id, step_order) VALUES (?, ?, ?)", (pathway_id, courses_dict[course_id], step_order))
-                        step_order += 1
-                    except Exception:
-                        pass
-                except Exception:
-                    continue
-
-        # بناء مسارات تلقائية لكل كفاءة
-        for c_name, c_id in competencies_dict.items():
-            path_name = f"مسار جدارة {c_name}"
-            cursor.execute("""
-                INSERT OR IGNORE INTO pathways (name, description, learning_objective, target_audience, type, level, estimated_duration, skills_targeted, outcomes, cert_status, competency_id)
-                VALUES (?, ?, ?, 'جميع الموظفين الحكوميين', 'مشتركة', 'تطبيقي', '30 ساعة', 'المهارات الوطنية والجدارات', 'بناء القدرات الذاتية والمهنية', 'معتمد وطنيا', ?)
-            """, (path_name, f"مسار مخصص للتميز في كفاءة {c_name}", f"تمكين موظفي الدولة من جدارة {c_name}", c_id))
-            
-            cursor.execute("SELECT id FROM pathways WHERE name = ?", (path_name,))
-            pid = cursor.fetchone()[0]
-            
-            cursor.execute("SELECT id FROM courses WHERE competency_id = ? OR id IN (SELECT course_id FROM competency_course_mapping WHERE competency_id = ?)", (c_id, c_id))
-            comp_courses = cursor.fetchall()
-            for s_idx, c_row in enumerate(comp_courses):
-                cursor.
+                            VALUES (?,
