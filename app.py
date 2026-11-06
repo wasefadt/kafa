@@ -2,6 +2,8 @@ import streamlit as st
 import sqlite3
 import pandas as pd
 import numpy as np
+import os
+import glob
 
 # إعداد الصفحة وتصميم الهوية البصرية القطرية (FutureX قطر)
 st.set_page_config(page_title="المنصة الوطنية القطرية للتعلم المرن (كفاءة X)", layout="wide", initial_sidebar_state="expanded")
@@ -66,8 +68,166 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+db_path = "kafaah_learning.db"
+
+# دالة ذكية لبناء قاعدة البيانات تلقائياً سحابياً إذا لم تكن موجودة
+def init_database_on_demand():
+    if not os.path.exists(db_path):
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        # إنشاء الجداول الأساسية
+        cursor.executescript("""
+        CREATE TABLE IF NOT EXISTS departments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        );
+        CREATE TABLE IF NOT EXISTS competencies (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            type TEXT,
+            level TEXT
+        );
+        CREATE TABLE IF NOT EXISTS courses (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            provider TEXT DEFAULT 'Coursera',
+            language TEXT,
+            duration_hours INTEGER,
+            difficulty_level TEXT,
+            url TEXT,
+            skills_covered TEXT
+        );
+        CREATE TABLE IF NOT EXISTS competency_course_mapping (
+            competency_id INTEGER,
+            course_id INTEGER,
+            PRIMARY KEY(competency_id, course_id),
+            FOREIGN KEY(competency_id) REFERENCES competencies(id),
+            FOREIGN KEY(course_id) REFERENCES courses(id)
+        );
+        CREATE TABLE IF NOT EXISTS pathways (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            description TEXT,
+            learning_objective TEXT,
+            target_audience TEXT,
+            type TEXT,
+            level TEXT,
+            estimated_duration TEXT
+        );
+        CREATE TABLE IF NOT EXISTS pathway_courses (
+            pathway_id INTEGER,
+            course_id INTEGER,
+            step_order INTEGER,
+            PRIMARY KEY(pathway_id, course_id),
+            FOREIGN KEY(pathway_id) REFERENCES pathways(id),
+            FOREIGN KEY(course_id) REFERENCES courses(id)
+        );
+        """)
+        conn.commit()
+
+        courses_dict = {}
+        competencies_dict = {}
+
+        # استيراد البيانات الحقيقية من ملفات Excel المستوردة
+        comp_files = glob.glob("Copy of موائمة*.csv")
+        for cf in comp_files:
+            try:
+                df = pd.read_csv(cf, skiprows=2)
+            except Exception:
+                try:
+                    df = pd.read_csv(cf)
+                except Exception:
+                    continue
+                
+            for idx, row in df.iterrows():
+                course_name = str(row.get('Course', '')).strip()
+                if not course_name or course_name == 'Course':
+                    continue
+                
+                course_url = str(row.get('Course URL', '')).strip()
+                course_id = str(row.get('Course ID', '')).strip() or course_name
+                comp_title = str(row.get('Subject', 'عام')).strip()
+                
+                if course_id not in courses_dict:
+                    cursor.execute("""
+                        INSERT INTO courses (title, provider, language, duration_hours, difficulty_level, url, skills_covered)
+                        VALUES (?, 'Coursera', 'العربية', 12, 'تطبيقي', ?, ?)
+                    """, (course_name, course_url, str(row.get('Skills Learned', '')).strip()))
+                    courses_dict[course_id] = cursor.lastrowid
+                    
+                if comp_title not in competencies_dict:
+                    cursor.execute("INSERT OR IGNORE INTO competencies (name, type, level) VALUES (?, 'سلوكية', 'تطبيقي')", (comp_title,))
+                    cursor.execute("SELECT id FROM competencies WHERE name = ?", (comp_title,))
+                    competencies_dict[comp_title] = cursor.fetchone()[0]
+                    
+                try:
+                    cursor.execute("INSERT INTO competency_course_mapping (competency_id, course_id) VALUES (?, ?)", (competencies_dict[comp_title], courses_dict[course_id]))
+                except sqlite3.IntegrityError:
+                    pass
+
+        # ملفات المواءمة التخصصية للإدارات الحكومية بقطر
+        dept_files = [
+            "نظم المعلومات.xlsx_Sheet1_Table1.csv",
+            "الوظائف المكتبية.xlsx_Sheet1_Table1.csv",
+            "الموارد البشرية.xlsx_Sheet1_Table1.csv",
+            "العلاقات العامة والإعلام.xlsx_Sheet1_Table1_(2).csv",
+            "الشؤون المالية والإدارية.xlsx_Sheet1_Table1_(2).csv",
+            "الشؤون القانونية.xlsx_Sheet1_Table1.csv",
+            "التعاون الدولي.xlsx_Sheet1_Sheet1.csv",
+            "التخطيط والجودة.xlsx_Sheet1_Table1.csv"
+        ]
+
+        for df_file in dept_files:
+            if not os.path.exists(df_file):
+                continue
+            dept_name = df_file.split(".xlsx")[0]
+            cursor.execute("INSERT OR IGNORE INTO departments (name) VALUES (?)", (dept_name,))
+            
+            try:
+                df = pd.read_csv(df_file)
+            except Exception:
+                continue
+                
+            pathway_name = f"مسار {dept_name}"
+            
+            cursor.execute("""
+                INSERT OR IGNORE INTO pathways (name, description, learning_objective, target_audience, type, level, estimated_duration)
+                VALUES (?, ?, ?, 'موظفو الإدارة', 'تخصصية', 'تطبيقي', '40 ساعة')
+            """, (pathway_name, f"مسار مخصص لتطوير جدارات {dept_name}", f"تأهيل الكوادر الفنية في {dept_name}"))
+            
+            cursor.execute("SELECT id FROM pathways WHERE name = ?", (pathway_name,))
+            pathway_id = cursor.fetchone()[0]
+            
+            step_order = 1
+            for idx, row in df.iterrows():
+                course_name = str(row.get('Course Name', row.get('Course', ''))).strip()
+                if not course_name:
+                    continue
+                course_url = str(row.get('Course URL', '')).strip()
+                course_id = str(row.get('Course ID', '')).strip() or course_name
+                
+                if course_id not in courses_dict:
+                    cursor.execute("""
+                        INSERT INTO courses (title, provider, language, duration_hours, difficulty_level, url, skills_covered)
+                        VALUES (?, 'Coursera', 'العربية', 15, 'تطبيقي', ?, ?)
+                    """, (course_name, course_url, str(row.get('Skills Learned', '')).strip()))
+                    courses_dict[course_id] = cursor.lastrowid
+                    
+                try:
+                    cursor.execute("INSERT INTO pathway_courses (pathway_id, course_id, step_order) VALUES (?, ?, ?)", (pathway_id, courses_dict[course_id], step_order))
+                    step_order += 1
+                except sqlite3.IntegrityError:
+                    pass
+
+        conn.commit()
+        conn.close()
+
+# تشغيل التهيئة التلقائية فورياً
+init_database_on_demand()
+
 def get_db_connection():
-    return sqlite3.connect("kafaah_learning.db")
+    return sqlite3.connect(db_path)
 
 # شريط التنقل الجانبي للهوية البصرية لجهة حكومية قطرية
 st.sidebar.title("منصة كفاءة X الوطنية")
@@ -132,7 +292,7 @@ if role == "بوابة الموظف (المحفظة الوطنية والتعل�
                     </div>
                 """, unsafe_allow_html=True)
         except Exception:
-            st.warning("يرجى التأكد من تشغيل ملف تهيئة قاعدة البيانات kafaah_learning.db لعرض المسارات الحقيقية.")
+            st.warning("يرجى التأكد من رفع ملفات المواءمة الـ CSV على مستودع GitHub لملء قاعدة البيانات.")
 
     with tabs[2]:
         st.subheader("🧠 محلل الفجوات المهارية الذكي (AI Skills-Gap Analyzer)")
