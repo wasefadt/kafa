@@ -103,7 +103,7 @@
                                 المنظومة الوطنية الموحدة
                             </span>
                         </div>
-                        <p class="text-[11px] text-slate-500 font-medium">التعلم المرن التراكمي • الربط مع Coursera ومـوارد</p>
+                        <p class="text-[11px] text-slate-500 font-medium">التعلم المرن التراكمي الربط مع Coursera ومـوارد</p>
                     </div>
                 </div>
 
