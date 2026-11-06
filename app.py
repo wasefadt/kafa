@@ -187,9 +187,9 @@
                         <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-qatar-gold border border-white/15 mb-3">
                             <i class="fa-solid fa-crown"></i> المرتبة الأولى في كفاءات التحول الرقمي بالوزارة
                         </div>
-                        <h1 class="text-2xl sm:text-3xl font-black mb-2">أهلاً بك في مسارات التعلم المرن، م. ناصر 👋</h1>
+                        <h1 class="text-2xl sm:text-3xl font-black mb-2">أهلاً بك في مسارات التعلم المرن، م ناصر 👋</h1>
                         <p class="text-white/85 text-xs sm:text-sm leading-relaxed">
-                            منصتك الموحدة تجمع بين مقررات Coursera المعتمدة، وتوجيه القيادات الحكومية، وحل التحديات الوطنية. يمكنك استكشاف المسارات المرنة والشجرية واختيار مستوى البدء بحرية.
+                            منصتك الموحدة تجمع بين مقررات Coursera المعتمدة، وتوجيه القيادات الحكومية، وحل التحديات الوطنية يمكنك استكشاف المسارات المرنة والشجرية واختيار مستوى البدء بحرية.
                         </p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-3">
