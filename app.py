@@ -189,7 +189,7 @@
                         </div>
                         <h1 class="text-2xl sm:text-3xl font-black mb-2">أهلاً بك في مسارات التعلم المرن م ناصر </h1>
                         <p class="text-white/85 text-xs sm:text-sm leading-relaxed">
-                            منصتك الموحدة تجمع بين مقررات Coursera المعتمدة، وتوجيه القيادات الحكومية وحل التحديات الوطنية يمكنك استكشاف المسارات المرنة والشجرية واختيار مستوى البدء بحرية.
+                            منصتك الموحدة تجمع بين مقررات Coursera المعتمدة وتوجيه القيادات الحكومية وحل التحديات الوطنية يمكنك استكشاف المسارات المرنة والشجرية واختيار مستوى البدء بحرية.
                         </p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-3">
@@ -398,7 +398,7 @@
                         </div>
                         <h2 class="text-xl font-black text-slate-800">منظومة مسارات التعلم المرن التخصصية</h2>
                         <p class="text-xs text-slate-500 mt-1">
-                            مسارات رئيسية تتفرع إلى مسارات فرعية دقيقة عبر 4 مستويات: التأسيسي، التطبيقي، المتقدم، والاحترافي. حرية تامة في اختيار المستوى والمسار دون قيود إلزامية.
+                            مسارات رئيسية تتفرع إلى مسارات فرعية دقيقة عبر 4 مستويات: التأسيسي التطبيقي  المتقدم والاحترافي. حرية تامة في اختيار المستوى والمسار دون قيود إلزامية.
                         </p>
                     </div>
                     <div class="flex items-center gap-2">
@@ -434,7 +434,7 @@
                                     <h3 class="text-base font-black text-slate-800">المسار الرئيسي: الذكاء الاصطناعي (Artificial Intelligence)</h3>
                                     <span class="bg-qatar-maroonSoft text-qatar-maroon text-[10px] font-bold px-2 py-0.5 rounded border border-qatar-maroon/20">6 مسارات فرعية</span>
                                 </div>
-                                <p class="text-xs text-slate-500 mt-0.5">الكفاءات المستهدفة: التحول الرقمي، الابتكار المؤسسي، حوكمة الخوارزميات، وصناعة القرار المرتكز على البيانات</p>
+                                <p class="text-xs text-slate-500 mt-0.5">الكفاءات المستهدفة: التحول الرقمي الابتكار المؤسسي حوكمة الخوارزميات وصناعة القرار المرتكز على البيانات</p>
                             </div>
                         </div>
                         <span class="text-xs font-bold text-slate-600 bg-white px-3 py-1.5 rounded-xl border border-slate-200 self-start md:self-auto">
@@ -487,7 +487,7 @@
                                     <span class="text-xs text-slate-400">26 ساعة</span>
                                 </div>
                                 <h4 class="font-black text-sm text-slate-800 mb-1">الذكاء الاصطناعي للمديرين وصنّاع القرار</h4>
-                                <p class="text-xs text-slate-500 mb-3">إدارة استراتيجيات التحول الذكي، تقييم العائد الاستثماري، وضمان أمن وسرية البيانات الحكومية.</p>
+                                <p class="text-xs text-slate-500 mb-3">إدارة استراتيجيات التحول الذكي تقييم العائد الاستثماري وضمان أمن وسرية البيانات الحكومية.</p>
                                 <div class="text-[11px] font-semibold text-slate-600"><i class="fa-solid fa-book text-qatar-maroon ml-1"></i> 5 برامج معتمدة من Stanford & Wharton</div>
                             </div>
                             <div class="mt-4 pt-3 border-t border-qatar-maroon/20 flex justify-between items-center">
@@ -625,7 +625,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <div class="md:col-span-2 relative">
                         <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3.5 text-slate-400"></i>
-                        <input type="text" id="course-search-input" onkeyup="filterCourses()" placeholder="ابحث باسم البرنامج، الجامعة المانحة، أو الكفاءة المستهدفة..." class="w-full pr-10 pl-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-qatar-maroon focus:bg-white transition">
+                        <input type="text" id="course-search-input" onkeyup="filterCourses()" placeholder="ابحث باسم البرنامج الجامعة المانحة أو الكفاءة المستهدفة..." class="w-full pr-10 pl-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-qatar-maroon focus:bg-white transition">
                     </div>
                     <div>
                         <select id="course-category-select" onchange="filterCourses()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-qatar-maroon text-slate-700 font-semibold">
@@ -762,7 +762,7 @@
                         </div>
                     </div>
                     <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl mb-4 leading-relaxed">
-                        مجالات التوجيه: صناعة القرارات الاستراتيجية، قيادة فرق التحول الكبرى، وتطوير القيادات الشابة.
+                        مجالات التوجيه: صناعة القرارات الاستراتيجية قيادة فرق التحول الكبرى وتطوير القيادات الشابة.
                     </div>
                     <div class="flex items-center justify-between pt-2 border-t border-slate-100">
                         <span class="text-xs text-emerald-600 font-bold"><i class="fa-regular fa-calendar-check ml-1"></i> متاح هذا الأسبوع</span>
@@ -784,7 +784,7 @@
                         </div>
                     </div>
                     <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl mb-4 leading-relaxed">
-                        مجالات التوجيه: قيادة مشاريع الذكاء الاصطناعي، إدارة التغيير التقني، وتطوير المواهب الرقمية.
+                        مجالات التوجيه: قيادة مشاريع الذكاء الاصطناعي إدارة التغيير التقني وتطوير المواهب الرقمية.
                     </div>
                     <div class="flex items-center justify-between pt-2 border-t border-slate-100">
                         <span class="text-xs text-emerald-600 font-bold"><i class="fa-regular fa-calendar-check ml-1"></i> متاح يوم الخميس</span>
@@ -806,7 +806,7 @@
                         </div>
                     </div>
                     <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl mb-4 leading-relaxed">
-                        مجالات التوجيه: مصفوفة الجدارات الوظيفية، صياغة خطط التطوير الفردية، وتجاوز العقبات القيادية.
+                        مجالات التوجيه: مصفوفة الجدارات الوظيفية صياغة خطط التطوير الفردية وتجاوز العقبات القيادية.
                     </div>
                     <div class="flex items-center justify-between pt-2 border-t border-slate-100">
                         <span class="text-xs text-slate-400 font-bold"><i class="fa-regular fa-clock ml-1"></i> الجلسات القادمة مكتملة</span>
@@ -886,7 +886,7 @@
                             <i class="fa-solid fa-building-columns"></i> بوابة الإدارة المؤسسية B2B
                         </div>
                         <h2 class="text-xl font-black text-slate-800">لوحة تحكم: وزارة الاتصالات وتكنولوجيا المعلومات</h2>
-                        <p class="text-xs text-slate-500 mt-1">متابعة استهلاك رخص Coursera، نسب التزام الموظفين بالمسارات، وتصدير تقارير الإنجاز لديوان الخدمة المدنية</p>
+                        <p class="text-xs text-slate-500 mt-1">متابعة استهلاك رخص Coursera  نسب التزام الموظفين بالمسارات  وتصدير تقارير الإنجاز لديوان الخدمة المدنية</p>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="showToast('جاري تصدير التقرير التنفيذي بصيغة Excel...')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
@@ -973,7 +973,7 @@
                         </div>
                         <h2 class="text-xl font-black text-slate-800">مركز مراجعة وجودة ملفات الإكسل (Excel 5 Hub)</h2>
                         <p class="text-xs text-slate-500 mt-1">
-                            فحص ومطابقة ملفات البرامج، الكفاءات الثلاث (سلوكية، قيادية، فنية)، والمواءمة المنجزة دون تعديل البيانات الأصلية تلقائياً.
+                            فحص ومطابقة ملفات البرامج  الكفاءات الثلاث (سلوكية  قيادية  فنية)  والمواءمة المنجزة دون تعديل البيانات الأصلية تلقائياً.
                         </p>
                     </div>
                     <div class="flex gap-2">
@@ -995,7 +995,7 @@
                 <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
                     <div class="text-[10px] font-bold text-slate-400">الملف 2</div>
                     <div class="text-xs font-black text-slate-800 mt-0.5">الكفاءات الوظيفية</div>
-                    <div class="text-emerald-600 text-[11px] font-bold mt-2"><i class="fa-solid fa-check"></i> سلوكية، قيادية، فنية</div>
+                    <div class="text-emerald-600 text-[11px] font-bold mt-2"><i class="fa-solid fa-check"></i> سلوكية  قيادية  فنية</div>
                 </div>
                 <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
                     <div class="text-[10px] font-bold text-slate-400">الملف 3</div>
