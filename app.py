@@ -49,8 +49,8 @@
             background: #F8FAFC;
         }
         .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height:6px;
+            width: 6 px;
+            height:6 px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
             background: #F1F5F9;
