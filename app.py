@@ -40,13 +40,13 @@
             background-color: #F8FAFC;
         }
         .maroon-gradient {
-            background: linear-gradient(135deg, #8A1538 0%, #560D23 100%);
+            background: linear-gradient(#8A1538 0%, #8A1538 0%, #560D23 100%);
         }
         .maroon-card-gradient {
-            background: linear-gradient(145deg, #8A1538 0%, #46091B 100%);
+            background: linear-gradient(#8A1538 0%, #8A1538 0%, #46091B 100%);
         }
         .gold-badge {
-            background: linear-gradient(135deg, #FFE57F 0%, #D4AF37 100%);
+            background: linear-gradient(#8A1538 0%, #FFE57F 0%, #D4AF37 100%);
         }
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
