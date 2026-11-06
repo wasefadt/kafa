@@ -43,10 +43,10 @@
             background: #F8FAFC;
         }
         .maroon-card-gradient {
-            background: linear-gradient(#8A1538 0%, #8A1538 0%, #46091B 100%);
+            background: #F8FAFC;
         }
         .gold-badge {
-            background: linear-gradient(#8A1538 0%, #FFE57F 0%, #D4AF37 100%);
+            background: #F8FAFC;
         }
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
