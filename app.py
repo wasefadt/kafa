@@ -40,7 +40,7 @@
             background-color: #F8FAFC;
         }
         .maroon-gradient {
-            background: linear-gradient(#8A1538 0%, #8A1538 0%, #560D23 100%);
+            background: #F8FAFC;
         }
         .maroon-card-gradient {
             background: linear-gradient(#8A1538 0%, #8A1538 0%, #46091B 100%);
