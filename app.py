@@ -101,8 +101,6 @@ def init_database_on_demand():
         cursor.execute("CREATE TABLE IF NOT EXISTS courses (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, provider TEXT DEFAULT 'Coursera', language TEXT, duration_hours INTEGER, difficulty_level TEXT, url TEXT, skills_covered TEXT, description TEXT, rating REAL, partner_name TEXT, scorable_skills TEXT, department_id INTEGER, competency_id INTEGER, FOREIGN KEY(department_id) REFERENCES departments(id), FOREIGN KEY(competency_id) REFERENCES competencies(id));")
         cursor.execute("CREATE TABLE IF NOT EXISTS competency_course_mapping (competency_id INTEGER, course_id INTEGER, PRIMARY KEY(competency_id, course_id), FOREIGN KEY(competency_id) REFERENCES competencies(id), FOREIGN KEY(course_id) REFERENCES courses(id));")
         cursor.execute("CREATE TABLE IF NOT EXISTS pathways (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, description TEXT, learning_objective TEXT, target_audience TEXT, type TEXT, level TEXT, estimated_duration TEXT, skills_targeted TEXT, outcomes TEXT, cert_status TEXT, department_id INTEGER, competency_id INTEGER, FOREIGN KEY(department_id) REFERENCES departments(id), FOREIGN KEY(competency_id) REFERENCES competencies(id));")
-        
-        # تصحيح وإغلاق السطر 104 بالكامل بشكل سليم
         cursor.execute("CREATE TABLE IF NOT EXISTS pathway_courses (pathway_id INTEGER, course_id INTEGER, step_order INTEGER, PRIMARY KEY(pathway_id, course_id), FOREIGN KEY(pathway_id) REFERENCES pathways(id), FOREIGN KEY(course_id) REFERENCES courses(id));")
         
         conn.commit()
@@ -344,7 +342,9 @@ if role == "بوابة الموظف (المحفظة والمسارات المه�
                         <div class='card-title'>{row['name']}</div>
                         <p>{row['description']}</p>
                         <div class='card-meta'><b>الهدف التعليمي:</b> {row['learning_objective']} | <b>المدة التقديرية:</b> {row['estimated_duration']}</div>
-                """st.markdown(path_html, unsafe_allow_html=True)
+                    </div>
+                """
+                st.markdown(path_html, unsafe_allow_html=True)
 
     with tabs[2]:
         st.subheader("🗺️ خريطة الرحلة التعليمية (Learning Journey Map)")
@@ -380,6 +380,7 @@ if role == "بوابة الموظف (المحفظة والمسارات المه�
                             <p><b>شريك المحتوى:</b> {row['partner_name']} | <b>التقييم:</b> {row['rating']} ⭐</p>
                             <a href='{row['url']}' target='_blank'><button style='background-color: #8b263e; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;'>التحق بالبرنامج عبر كورسير ↗</button></a>
                         </div>
+                    </div>
                 """
                 st.markdown(step_html, unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
@@ -462,28 +463,4 @@ elif role == "لوحة التحكم المركزية والإدارة (Admin)":
                     """, (p_name, p_desc, p_type, p_lvl, p_dur))
                     conn.commit()
                     conn.close()
-                    st.success(f"تم إنشاء المسار الوطني الجديد '{p_name}' بنجاح وتوفيره للموظفين.")
-                except Exception as e:
-                    st.error(f"خطأ أثناء الحفظ: {e}")
-            else:
-                st.warning("يرجى ملء اسم المسار على الأقل.")
-
-else:
-    st.title("🔌 بوابة تكامل الأنظمة والربط التقني")
-    st.write("المواصفات التقنية وواجهات API لتكامل المنصة مع النظم السيادية لدولة قطر.")
-
-    tech_html = """
-        <div class='card'>
-            <div class='card-title'>⚙️ تكامل نظام الموارد البشرية الحكومي (Mawared / SAP SuccessFactors)</div>
-            <p>يتم مزامنة ساعات التدريب والشهادات المهنية المنجزة تلقائياً عبر بروتوكول <b>OData API</b> مع نظام موارد القطري لربط التدريب بالترقيات والمسار الوظيفي.</p>
-        </div>
-        <div class='card'>
-            <div class='card-title'>🔐 نظام الدخول الموحد (SSO / NAS integration)</div>
-            <p>يتكامل النظام مع بوابة الدخول الموحد الوطنية (NAS) لتسجيل الدخول الآمن للموظفين باستخدام الرقم الشخصي القطري (QID).</p>
-        </div>
-        <div class='card'>
-            <div class='card-title'>🔌 واجهات ربط Coursera API</div>
-            <p>تكامل مباشر مع <b>Coursera Enterprise API</b> لتحديث إحصائيات الموظفين، ساعات التعلم المنجزة، ونسب إكمال المقررات تلقائياً كل 24 ساعة.</p>
-        </div>
-    """
-    st.markdown(tech_html, unsafe_allow_html=True)
+        
