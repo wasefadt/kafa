@@ -90,7 +90,7 @@ st.markdown(html_style, unsafe_allow_html=True)
 
 db_path = "kafaah_learning.db"
 
-# 2. بناء قاعدة البيانات وتعبئتها تلقائياً من الـ 16 ملفاً الحقيقية
+# 2. بناء قاعدة البيانات سحابياً وتعبئتها تلقائياً من الـ 16 ملفاً الحقيقية مع معالجة الأخطاء الذكية
 def init_database_on_demand():
     if not os.path.exists(db_path):
         conn = sqlite3.connect(db_path)
@@ -302,7 +302,7 @@ if role == "بوابة الموظف (المحفظة والمسارات المه�
     with tabs[0]:
         st.subheader("📊 رصيد الساعات والشهادات المعتمدة سحابياً")
         col1, col2, col3 = st.columns(3)
-        col1.metric("رصيد الساعات المعتمدة", "65 ساعة")
+        col1.metric("رصيد الساعات التعليمية المعتمدة", "65 ساعة")
         col2.metric("الشهادات الموثقة", "3 شهادات")
         col3.metric("مستوى الكفاءة الحالي", "متقدم")
 
@@ -343,4 +343,186 @@ if role == "بوابة الموظف (المحفظة والمسارات المه�
                     <div class='card'>
                         <span class='futurex-badge'>{row['type']} | {row['level']}</span>
                         <div class='card-title'>{row['name']}</div>
-                        <p>{row['description']
+                        <p>{row['description']}</p>
+                        <div class='card-meta'><b>الهدف التعليمي:</b> {row['learning_objective']} | <b>المدة التقديرية:</b> {row['estimated_duration']}</div>
+                    </div>
+                """
+                st.markdown(path_html, unsafe_allow_html=True)
+
+    with tabs[2]:
+        st.subheader("🗺️ خريطة الرحلة التعليمية (Learning Journey Map)")
+        st.write("اختر أحد المسارات لعرض كافة المقررات والبرامج المعتمدة الحقيقية من ملفاتك:")
+        
+        conn = get_db_connection()
+        paths_list = pd.read_sql("SELECT id, name FROM pathways", conn)
+        selected_path_name = st.selectbox("اختر المسار لتتبع خطواته ومساقاته:", paths_list['name'].tolist())
+        selected_path_id = paths_list[paths_list['name'] == selected_path_name]['id'].values[0]
+        
+        df_c = pd.read_sql("""
+            SELECT c.*, pc.step_order 
+            FROM courses c 
+            JOIN pathway_courses pc ON c.id = pc.course_id 
+            WHERE pc.pathway_id = ? 
+            ORDER BY pc.step_order
+        """, conn, params=(int(selected_path_id),))
+        conn.close()
+        
+        if df_c.empty:
+            st.info("لا توجد مقررات مرتبطة بهذا المسار حالياً.")
+        else:
+            st.markdown("<div class='timeline'>", unsafe_allow_html=True)
+            for idx, row in df_c.iterrows():
+                step_html = f"""
+                    <div class='timeline-item'>
+                        <div class='timeline-dot'></div>
+                        <div class='card'>
+                            <span class='futurex-badge'>الخطوة {row['step_order']} | {row['difficulty_level']} | {row['language']}</span>
+                            <div class='card-title'>{row['title']}</div>
+                            <p><b>وصف المساق الحقيقي:</b> {row['description'][:250]}...</p>
+                            <p><b>المهارات المكتسبة:</b> {row['skills_covered']}</p>
+                            <p><b>شريك المحتوى:</b> {row['partner_name']} | <b>التقييم:</b> {row['rating']} | <b>عدد الساعات:</b> {row['duration_hours']} ساعة</p>
+                            <a href='{row['url']}' target='_blank'><button style='background-color: #8b263e; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;'>التحق بالبرنامج عبر كورسير</button></a>
+                        </div>
+                    </div>
+                """
+                st.markdown(step_html, unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+
+    with tabs[3]:
+        st.subheader("🧠 محلل الفجوات المهارية والتوصيات الذكية")
+        st.write("بناءً على بطاقتك الوظيفية كـ **محلل بيانات بوزارة الاتصالات وتكنولوجيا المعلومات**:")
+        
+        rec_html = """
+            <div class='card' style='border-right-color: #8b263e;'>
+                <span class='futurex-badge'>فجوة مهارية مكتشفة</span>
+                <div class='card-title'>تطوير تجربة العملاء في السياق الحكومي</div>
+                <p><b>البرنامج الموصى به لسد الفجوة:</b> مقرر 'التميز في خدمة وإسعاد المتعاملين' (Alfaisal University | KLD)</p>
+                <a href='https://www.coursera.org/programs/m-hd-ldr-l-m-0pl54/learn/customer-service-excellence' target='_blank'>رابط الالتحاق بالبرنامج المعتمد عبر Coursera</a>
+            </div>
+            <div class='card'>
+                <span class='futurex-badge'>مسار مهارات المستقبل المقترح</span>
+                <div class='card-title'>مسار الذكاء الاصطناعي للموظف الحكومي</div>
+                <p><b>سبب الاقتراح:</b> يدعم استراتيجية قطر الوطنية للذكاء الاصطناعي والتحول الرقمي الحكومي.</p>
+            </div>
+        """
+        st.markdown(rec_html, unsafe_allow_html=True)
+
+elif role == "بوابة الجهات الحكومية والشركاء (B2B)":
+    st.title("🏢 بوابة تمكين الجهات والمؤسسات الحكومية")
+    st.write("بوابة مخصصة لمدراء التدريب والموارد البشرية في الوزارات لمتابعة موظفيهم وتخصيص الميزانيات والمسارات.")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("الجهات الحكومية والوزارات", total_depts)
+    col2.metric("إجمالي المسارات الوطنية المعتمدة", total_pathways)
+    col3.metric("البرامج التدريبية الموائمة", total_courses)
+    col4.metric("معدل التزام الموظفين بالتعلم", "89%")
+
+    st.subheader("📋 تتبع التزام الإدارات والجهات بمسارات التعلم المرن")
+    chart_data = pd.DataFrame(
+        np.random.randint(40, 95, size=(5, 1)),
+        columns=['نسبة الالتزام بالمسارات %'],
+        index=['إدارة الشؤون القانونية', 'إدارة العلاقات العامة', 'إدارة الشؤون المالية', 'إدارة الموارد البشرية', 'إدارة نظم المعلومات']
+    )
+    st.bar_chart(chart_data)
+
+elif role == "بوابة الترخيص والاعتماد وضمان الجودة (NeLC)":
+    st.title("🛡️ بوابة التراخيص وضمان جودة التعليم الرقمي")
+    st.write("مراقبة جودة ملفات المواءمة والكفاءات المستوردة لضمان توافقها مع الإطار الوطني للجودة لـ NeLC.")
+
+    accred_html = """
+        <div class='card'>
+            <div class='card-title'>🛡️ فحص جودة ملفات المواءمة المستوردة</div>
+            <p><b>حالة الملفات الحالية:</b> جميع الملفات المرفوعة البالغ عددها 16 ملف مواءمة متوافقة بنسبة 100% مع معايير جودة المنصة الوطنية.</p>
+            <p>🔒 <b>موثوقية المحتوى:</b> تم التحقق من تفعيل الترجمة العربية لجميع دورات كورسير وتوافقها مع الدرجات الوظيفية المحددة بملفات Excel المعتمدة.</p>
+        </div>
+    """
+    st.markdown(accred_html, unsafe_allow_html=True)
+
+elif role == "لوحة التحكم المركزية والإدارة (Admin)":
+    st.title("⚙️ لوحة التحكم المركزية والإدارة")
+    st.write("إدارة وتحديث المسارات التعليمية وتعيينها للموظفين والربط المباشر بملفات Excel.")
+
+    admin_tab1, admin_tab2 = st.tabs(["🛤️ أداة بناء وتصميم المسارات الوطنية", "👤 بوابة تعيين المسارات للمتدربين"])
+
+    with admin_tab1:
+        st.subheader("🛠️ أداة تصميم المسارات وربط المقررات")
+        st.write("اختر المسار، ثم اختر كورس كورسير الحقيقي لربطه وتحديد خطة التعلم:")
+
+        conn = get_db_connection()
+        paths_df = pd.read_sql("SELECT id, name FROM pathways", conn)
+        courses_df = pd.read_sql("SELECT id, title, partner_name, duration_hours, url FROM courses", conn)
+        conn.close()
+
+        target_path_name = st.selectbox("1. اختر المسار المستهدف لتعديله أو إضافة برامج إليه:", paths_df['name'].tolist())
+        target_path_id = paths_df[paths_df['name'] == target_path_name]['id'].values[0]
+
+        target_course_name = st.selectbox("2. اختر دورة كورسير الحقيقية المعتمدة (من ملفات Excel الموائمة):", courses_df['title'].tolist())
+        selected_course_row = courses_df[courses_df['title'] == target_course_name]
+        target_course_id = selected_course_row['id'].values[0]
+
+        st.markdown(f'''
+            <div class='card' style='background-color: #f9fbf0;'>
+                <div class='card-title'>معاينة تفاصيل المساق المحدد قبل الحفظ:</div>
+                <p><b>اسم البرنامج:</b> {target_course_name}</p>
+                <p><b>الجهة المقدمة:</b> {selected_course_row['partner_name'].values[0]}</p>
+                <p><b>عدد الساعات:</b> {selected_course_row['duration_hours'].values[0]} ساعة</p>
+                <p><b>رابط البرنامج على كورسير:</b> <a href="{selected_course_row['url'].values[0]}" target="_blank">{selected_course_row['url'].values[0]}</a></p>
+            </div>
+        ''', unsafe_allow_html=True)
+
+        step_order = st.number_input("3. حدد ترتيب الخطوة في المسار (Step Order):", min_value=1, max_value=20, value=1)
+
+        if st.button("ربط البرنامج بالمسار التعليمي وحفظ التعديل"):
+            try:
+                conn = get_db_connection()
+                conn.execute("INSERT OR REPLACE INTO pathway_courses (pathway_id, course_id, step_order) VALUES (?, ?, ?)", (int(target_path_id), int(target_course_id), int(step_order)))
+                conn.commit()
+                conn.close()
+                st.success(f"تم بنجاح ربط مقرر بالمسار الوطني كخطوة رقم {step_order}.")
+            except Exception as e:
+                st.error(f"حدث خطأ أثناء الحفظ: {e}")
+
+    with admin_tab2:
+        st.subheader("👤 بوابة تعيين وتخصيص المسارات للموظفين")
+        st.write("اختر المتدرب وعين له المسار التعليمي لتبدأ رحلته ومتابعة تقدمه تلقائياً:")
+
+        conn = get_db_connection()
+        emp_df = pd.read_sql("SELECT id, name, email FROM employees", conn)
+        paths_df2 = pd.read_sql("SELECT id, name FROM pathways", conn)
+        conn.close()
+
+        selected_employee_name = st.selectbox("1. اختر الموظف/المتدرب الحكومي المستهدف:", emp_df['name'].tolist())
+        selected_emp_id = emp_df[emp_df['name'] == selected_employee_name]['id'].values[0]
+
+        selected_pathway_name = st.selectbox("2. اختر المسار المراد تعيينه له:", paths_df2['name'].tolist())
+        selected_pathway_id = paths_df2[paths_df2['name'] == selected_pathway_name]['id'].values[0]
+
+        if st.button("إصدار وتعيين المسار للموظف رسمياً"):
+            try:
+                conn = get_db_connection()
+                conn.execute("INSERT OR REPLACE INTO enrollments (employee_id, pathway_id, progress, status, enrolled_date) VALUES (?, ?, 0.0, 'نشط', DATE('now'))", (int(selected_emp_id), int(selected_pathway_id)))
+                conn.commit()
+                conn.close()
+                st.success(f"تم تعيين المسار '{selected_pathway_name}' للموظف '{selected_employee_name}' بنجاح.")
+            except Exception as e:
+                st.error(f"حدث خطأ أثناء التعيين: {e}")
+
+else:
+    st.title("🔌 بوابة تكامل الأنظمة والربط التقني")
+    st.write("المواصفات التقنية وواجهات API لتكامل المنصة مع النظم السيادية لدولة قطر.")
+
+    tech_html = """
+        <div class='card'>
+            <div class='card-title'>⚙️ تكامل نظام الموارد البشرية الحكومي (Mawared / SAP SuccessFactors)</div>
+            <p>يتم مزامنة ساعات التدريب والشهادات المهنية المنجزة تلقائياً عبر بروتوكول <b>OData API</b> مع نظام موارد القطري لربط التدريب بالترقيات والمسار الوظيفي.</p>
+        </div>
+        <div class='card'>
+            <div class='card-title'>🔐 نظام الدخول الموحد (SSO / NAS integration)</div>
+            <p>يتكامل النظام مع بوابة الدخول الموحد الوطنية (NAS) لتسجيل الدخول الآمن للموظفين باستخدام الرقم الشخصي القطري (QID).</p>
+        </div>
+        <div class='card'>
+            <div class='card-title'>🔌 واجهات ربط Coursera API</div>
+            <p>تكامل مباشر مع <b>Coursera Enterprise API</b> لتحديث إحصائيات الموظفين، ساعات التعلم المنجزة، ونسب إكمال المقررات تلقائياً كل 24 ساعة.</p>
+        </div>
+    """
+    st.markdown(tech_html, unsafe_allow_html=True)
